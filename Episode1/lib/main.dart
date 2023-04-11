@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'model/currency.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 
 void main() {
   runApp(MyApp());
@@ -40,9 +43,17 @@ class MyApp extends StatelessWidget {
 }
 
 class Home extends StatelessWidget {
-  const Home({
-    Key? key,
-  }) : super(key: key);
+  List<Currency> currency = [];
+
+  getResponse() {
+    var url = "http://sasansafari.com/flutter/api.php?access_key=flutter123456";
+    http.get(Uri.parse(url)).then((value) => {
+        if(value.statusCode==200){
+          List jsonList=convert.jsonDecode(value.body);
+        }
+
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +133,7 @@ class Home extends StatelessWidget {
                 height: 350,
                 child: ListView.separated(
                   physics: const BouncingScrollPhysics(),
-                  itemCount: 14,
+                  itemCount: currency.length,
                   itemBuilder: (BuildContext context, int position) {
                     return const Padding(
                       padding: EdgeInsets.fromLTRB(0, 8, 0, 6),
@@ -232,9 +243,9 @@ class AddvItem extends StatelessWidget {
 }
 
 class SignalItem extends StatelessWidget {
-  const SignalItem({
-    Key? key,
-  }) : super(key: key);
+  int position;
+  List<Currency> currency;
+  SignalItem(this.position, this.currency);
 
   @override
   Widget build(BuildContext context) {
